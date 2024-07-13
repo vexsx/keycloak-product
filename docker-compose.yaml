@@ -61,8 +61,6 @@ services:
     - ${KC_PORT}:8080
     - 8443:8443
     - 9000:9000
-    volumes:
-    - ./keycloak/realm.json:/opt/keycloak/data/import/realm.json:ro
     logging: *logging
     networks:
       - keycloak

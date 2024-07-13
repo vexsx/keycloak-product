@@ -10,7 +10,15 @@ ENV KC_DB=mssql
 
 WORKDIR /opt/keycloak
 # For demonstration purposes only, please make sure to use proper certificates in production instead
-RUN keytool -genkeypair -storepass password -storetype PKCS12 -keyalg RSA -keysize 2048 -dname "CN=server" -alias server -ext "SAN:c=DNS:localhost,IP:127.0.0.1" -keystore conf/server.keystore
+# RUN keytool -genkeypair -storepass password -storetype PKCS12 -keyalg RSA -keysize 2048 -dname "CN=server" -alias server -ext "SAN:c=DNS:localhost,IP:127.0.0.1" -keystore conf/server.keystore
+
+# Add MSSQL JDBC driver
+ADD --chown=keycloak:keycloak --chmod=644 https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/9.4.1.jre11/mssql-jdbc-9.4.1.jre11.jar /opt/keycloak/providers/mssql-jdbc-9.2.1.jre11.jar
+ADD  --chown=keycloak:keycloak --chmod=644 https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/9.4.1.jre11/mssql-jdbc-9.4.1.jre11.jar /opt/jboss/keycloak/modules/system/layers/base/com/microsoft/sqlserver/main/mssql-jdbc.jar
+# Add the module.xml file to configure the MSSQL module
+ADD module.xml /opt/jboss/keycloak/modules/system/layers/base/com/microsoft/sqlserver/main/
+
+
 RUN /opt/keycloak/bin/kc.sh build
 
 # Stage 2: Final image
@@ -36,16 +44,8 @@ ENV KC_HOSTNAME_STRICT_BACKCHANNEL=false
 ENV KC_LOG_CONSOLE_COLOR=true
 
 
-# Add MSSQL JDBC driver
-ADD --chown=keycloak:keycloak --chmod=644 https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/9.4.1.jre11/mssql-jdbc-9.4.1.jre11.jar /opt/keycloak/providers/mssql-jdbc-9.2.1.jre11.jar
-ADD  --chown=keycloak:keycloak --chmod=644 https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/9.4.1.jre11/mssql-jdbc-9.4.1.jre11.jar /opt/jboss/keycloak/modules/system/layers/base/com/microsoft/sqlserver/main/mssql-jdbc.jar
-# Add the module.xml file to configure the MSSQL module
-ADD module.xml /opt/jboss/keycloak/modules/system/layers/base/com/microsoft/sqlserver/main/
 
 # Expose Keycloak ports
 EXPOSE 8080 8443 9000
 
-# Context: RUN the build command
-RUN /opt/keycloak/bin/kc.sh build
-
-ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start", "--optimized" , "--hostname-strict=false",  "--features=admin2,hostname-v2,docker,recovery-codes"]
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start", "--optimized" , "--hostname-strict=false", "--https-certificate-file=/path/to/certfile.pem", "--https-certificate-key-file=/path/to/keyfile.pem"]
