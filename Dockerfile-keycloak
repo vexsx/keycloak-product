@@ -19,7 +19,7 @@ COPY --from=builder /opt/keycloak/ /opt/keycloak/
 
 
 
-# Change these values to point to a running MSSQL instance
+# ENV for Keycloak
 ENV KC_HTTP_PORT=8080
 ENV KC_HTTPS_PORT=8443
 ENV KC_PROXY=edge
@@ -34,6 +34,7 @@ ENV KC_HOSTNAME_STRICT_BACKCHANNEL=false
 # ENV KC_HOSTNAME_FRONTEND=localhost
 ENV KC_LOG_CONSOLE_COLOR=true
 
+
 # Add MSSQL JDBC driver
 ADD --chown=keycloak:keycloak --chmod=644 https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/9.4.1.jre11/mssql-jdbc-9.4.1.jre11.jar /opt/keycloak/providers/mssql-jdbc-9.2.1.jre11.jar
 
@@ -44,4 +45,4 @@ ADD module.xml /opt/jboss/keycloak/modules/system/layers/base/com/microsoft/sqls
 EXPOSE 8080 8443
 
 
-ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start","--optimized"]
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start", "--optimized"]
