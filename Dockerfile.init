@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/mssql-tools
 
-COPY create_database.sql /scripts/create_database.sql
+COPY .init/create_database.sql /scripts/create_database.sql
 COPY entrypoint.sh /scripts/entrypoint.sh
 
 RUN chmod +x /scripts/entrypoint.sh
