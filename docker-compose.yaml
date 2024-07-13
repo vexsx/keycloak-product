@@ -53,8 +53,11 @@ services:
        KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
        KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
        KC_HOSTNAME: ${KC_HOSTNAME}
+       KC_HOSTNAME_URL: ${KC_HOSTNAME}
        KC_HOSTNAME_ADMIN: ${KC_HOSTNAME}
        KC_HOSTNAME_FRONTEND: ${KC_HOSTNAME}
+       KC_PORT: "8080"
+       KC_HTTP_ENABLED: "true"
     depends_on:
       - sqlserver
     ports:
