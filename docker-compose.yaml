@@ -33,6 +33,8 @@ services:
       dockerfile: Dockerfile.init
     environment:
       SQLSERVER_PASSWORD: ${SQLSERVER_PASSWORD}
+    depends_on:
+      - sqlserver
     networks:
       - keycloak
 
@@ -45,14 +47,16 @@ services:
        DB_VENDOR: "mssql"
        KC_DB_USERNAME: "sa"
        KC_DB_PASSWORD: "${SQLSERVER_PASSWORD}"
-       KC_DB_URL: "jdbc:sqlserver://sqlserver:1433;databaseName=keycloak;encrypt=true;trustServerCertificate=true"
-       QUARKUS_DATASOURCE_JDBC_URL: "jdbc:sqlserver://sqlserver:1433;databaseName=keycloak;encrypt=true;trustServerCertificate=true;loginTimeout=30"
+       KC_DB_URL: "jdbc:sqlserver://sqlserver:1433;databaseName=keycloak;encrypt=false;trustServerCertificate=true"
+       QUARKUS_DATASOURCE_JDBC_URL: "jdbc:sqlserver://sqlserver:1433;databaseName=keycloak;encrypt=false;trustServerCertificate=true;loginTimeout=30"
        KC_METRICS_ENABLED: "true"
        KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
        KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
        KC_HOSTNAME: ${KC_HOSTNAME}
        KC_HOSTNAME_ADMIN: ${KC_HOSTNAME}
        KC_HOSTNAME_FRONTEND: ${KC_HOSTNAME}
+    depends_on:
+      - sqlserver
     ports:
     - ${KC_PORT}:8080
     - 8443:8443
